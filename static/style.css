@@ -27,13 +27,13 @@ button {
     padding: 10px 15px;
     border: none;
     border-radius: 6px;
-    background: #4CAF50;
+    background: #052953;
     color: white;
     cursor: pointer;
 }
 
 button:hover {
-    background: #45a049;
+    background: #052953;
 }
 
 .response-box {
