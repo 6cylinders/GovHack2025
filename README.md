@@ -1,4 +1,6 @@
-## **GOVHACK 2025**
+# **GOVHACK 2025**
+
+## InsightPilot
 
 #### What is InsightPilot?
 InsightPilot An AI driven chatbot interface that allows dataset operations to be performed using natural language, helping users gain no-code insights from datasets.
