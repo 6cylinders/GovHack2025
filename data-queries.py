@@ -1,5 +1,5 @@
 import pandas as pd
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import base64
 import os
 import io
@@ -130,6 +130,3 @@ def get_overall_leave_trends(save_path=None):
     return html_img
 
 get_overall_leave_trends(save_path="leave_data/leave_trends.png")
-
-test = sick_leave_trends()
-print(test)
