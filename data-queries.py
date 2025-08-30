@@ -89,9 +89,67 @@ def sick_leave_trends():
     return output
     
 
+def annual_earned_leave_trends():
+    #trying to answer: Is annual leave being planned and spread evenly, or clumped at year-end?
+    annual_df = df[df["Leave Type"].str.lower().str.contains("earned", na=False)]
+    monthly_leave = annual_df.groupby("month")["Days Taken"].sum().reset_index()
+    # Calculate percentage of total annual leave per month
+    total_leave = monthly_leave["Days Taken"].sum()
+    monthly_leave["Percentage of Total"] = (monthly_leave["Days Taken"] / total_leave * 100).round(2)
+    month_order = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    monthly_leave["month"] = pd.Categorical(monthly_leave["month"], categories=month_order, ordered=True)
+    monthly_leave = monthly_leave.sort_values("month").reset_index(drop=True)
+    # Format output
+    output = (
+        "--- Annual Leave by Month ---\n"
+        f"{monthly_leave.to_string(index=False)}\n\n"
+    )
+    return output
+    
+
+
+def overlapping_leave_trends():
+    #trying to answer: Are multiple employees in the same department/team on leave at overlapping times?
+     # Convert Start/End dates to datetime
+    df["Start Date"] = pd.to_datetime(df["Start Date"])
+    df["End Date"] = pd.to_datetime(df["End Date"])
+
+    overlaps = []
+
+    # Group by Department
+    for dept, group in df.groupby("Department"):
+        group = group.sort_values("Start Date").reset_index(drop=True)
+        n = len(group)
+        
+        # Check each pair of employees for overlap
+        for i in range(n):
+            emp1 = group.iloc[i]
+            for j in range(i+1, n):
+                emp2 = group.iloc[j]
+                
+                # Check if dates overlap
+                latest_start = max(emp1["Start Date"], emp2["Start Date"])
+                earliest_end = min(emp1["End Date"], emp2["End Date"])
+                
+                if latest_start <= earliest_end:  # There is overlap
+                    overlaps.append({
+                        "Department": dept,
+                        "Employee 1": emp1["Employee Name"],
+                        "Employee 2": emp2["Employee Name"],
+                        "Overlap Start": latest_start.date(),
+                        "Overlap End": earliest_end.date()
+                    })
+
+    if not overlaps:
+        return "No overlapping leaves found within any department."
+    
+    overlap_df = pd.DataFrame(overlaps)
+    
+    return overlap_df
+
+    
 
 
 
-
-test = sick_leave_trends()
+test = overlapping_leave_trends()
 print(test)
