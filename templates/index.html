@@ -48,13 +48,16 @@
             </table>
     {% endif %}
 
-{% if table_img %}
-  <img src="{{ table_img }}" alt="Generated chart">
-{% endif %}
-        
+
 
 
 
     </div>
+    <div class = "table-container">
+        {% if table_img %}
+        <img src="{{ table_img }}" alt="Generated chart">
+    {% endif %}
+    </div>
+        
 </body>
 </html>
