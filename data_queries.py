@@ -7,16 +7,18 @@ import io
 df = pd.read_csv('leave_data\employee leave tracking data.csv')
 
 def findlowestleave():
-    #trying to answer: #trying to answer: Who has the lowest remaining leave balance (at risk of running out)?
+    # Who has the lowest remaining leave balance (at risk of running out)?
     min_leave = df["Remaining Leaves"].min()
     names = df.loc[df['Remaining Leaves'] == min_leave, "Employee Name"]
     result = names.tolist()
-    #still need to figure out the thought process being displayed
-    output = (
-        "--- Employee(s) with lowest Remaining Leave ---<br>"
-        f"Remaining leave days: {min_leave}<br>"
-        f"Employees: {', '.join(result)}"
-    )
+
+    # Format output like a mini table
+    output = "--- Employee(s) with Lowest Remaining Leave ---<br>"
+    output += "Employee Name | Remaining Leave<br>"
+    output += "--- | ---<br>"
+
+    for name in result:
+        output += f"{name} | {min_leave}<br>"
     output = output.replace('\n', '<br>')
     return output
 
