@@ -110,6 +110,7 @@ def annual_earned_leave_trends():
 
 def overlapping_leave_trends():
     #trying to answer: Are multiple employees in the same department/team on leave at overlapping times?
+    #this one is a bit weird and might not fill properly in the frontend
      # Convert Start/End dates to datetime
     df["Start Date"] = pd.to_datetime(df["Start Date"])
     df["End Date"] = pd.to_datetime(df["End Date"])
