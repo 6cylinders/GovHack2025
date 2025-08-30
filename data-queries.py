@@ -134,14 +134,20 @@ def employees_near_entitlement(threshold=0.9):
 
     # Filter employees who are above the threshold
     alert_df = df[df['Fraction Used'] >= threshold].copy()
-
-    # Create list of tuples: (Employee Name, Leave Type, Percentage Used)
     result = [(row['Employee Name'], row['Leave Type'], round(row['Fraction Used'] * 100, 1), row['Department'])
               for _, row in alert_df.iterrows()]
 
     return result
 
+def employees_not_taking_leave(threshold=0.1):
+    df['Fraction Used'] = df['Leave Taken So Far'] / df['Total Leave Entitlement']
+    low_leave_df = df[df['Fraction Used'] <= threshold].copy()
+    result = [(row['Employee Name'], row['Leave Type'], round(row['Fraction Used'] * 100, 1))
+              for _, row in low_leave_df.iterrows()]
+
+    return result
+
 
 #get_overall_leave_trends(save_path="leave_data/leave_trends.png")
-for i in employees_near_entitlement():
+for i in employees_not_taking_leave():
     print(i)
