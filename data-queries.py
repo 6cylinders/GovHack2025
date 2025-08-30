@@ -148,7 +148,6 @@ def employees_not_taking_leave(threshold=0.1):
     return result
 
 
-<<<<<<< HEAD
 def department_sick_leave():
     sick_df = df[df["Leave Type"].str.lower().str.contains("sick leave", na=False)]
 
@@ -166,8 +165,3 @@ def department_sick_leave():
 test = department_sick_leave()
 print(test)
 
-=======
-#get_overall_leave_trends(save_path="leave_data/leave_trends.png")
-for i in employees_not_taking_leave():
-    print(i)
->>>>>>> f015af4927b12439ec4ad4f7fa1933a8e7e010de
