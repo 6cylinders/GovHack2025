@@ -160,8 +160,3 @@ def department_sick_leave():
     output = "--- Departments with Sick Leave Totals ---\n" + dept_sick.to_string(index=False)
     
     return output
-
-
-test = department_sick_leave()
-print(test)
-

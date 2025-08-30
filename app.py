@@ -3,6 +3,7 @@ import io
 import base64
 import matplotlib.pyplot as plt
 
+
 app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
