@@ -27,14 +27,12 @@
             {% endif %}
         </div>
         {% endif %}
-<<<<<<< Updated upstream
-=======
         {% if table_data %}
             <table border="1" cellpadding="5" cellspacing="0">
                 <thead>
                     <tr>
                         {% for key in table_data[0].keys() %}
-                            <th>{{ key }}</th>
+                            <th> {% autoescape false %}{{ key }} {% endautoescape %}</th>
                         {% endfor %}
                     </tr>
                 </thead>
@@ -57,7 +55,6 @@
 
 
 
->>>>>>> Stashed changes
     </div>
 </body>
 </html>

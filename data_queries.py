@@ -87,14 +87,7 @@ def sick_leave_trends():
         "--- Potential Spikes (above average) ---\n"
         f"{spikes.to_string(index=False) if not spikes.empty else 'No significant spikes detected'}"
     )
-<<<<<<< Updated upstream
-=======
-    output = output.replace('\n','<br>')
-    return output
-
-
->>>>>>> Stashed changes
-
+    output = output.replace('\n', '<br>')
     return output
     
 def get_overall_leave_trends(save_path=None):
