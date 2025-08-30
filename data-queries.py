@@ -142,6 +142,20 @@ def employees_near_entitlement(threshold=0.9):
     return result
 
 
-#get_overall_leave_trends(save_path="leave_data/leave_trends.png")
-for i in employees_near_entitlement():
-    print(i)
+def department_sick_leave():
+    sick_df = df[df["Leave Type"].str.lower().str.contains("sick leave", na=False)]
+
+    if sick_df.empty:
+        return "No sick leave records found."
+    # Group by department and sum sick leave days
+    dept_sick = sick_df.groupby("Department")["Days Taken"].sum().reset_index()
+    # Sort descending to see departments with most sick leave
+    dept_sick = dept_sick.sort_values(by="Days Taken", ascending=False).reset_index(drop=True)
+    output = "--- Departments with Sick Leave Totals ---\n" + dept_sick.to_string(index=False)
+    
+    return output
+
+
+test = department_sick_leave()
+print(test)
+
