@@ -129,4 +129,19 @@ def get_overall_leave_trends(save_path=None):
 
     return html_img
 
-get_overall_leave_trends(save_path="leave_data/leave_trends.png")
+def employees_near_entitlement(threshold=0.9):
+    df['Fraction Used'] = df['Leave Taken So Far'] / df['Total Leave Entitlement']
+
+    # Filter employees who are above the threshold
+    alert_df = df[df['Fraction Used'] >= threshold].copy()
+
+    # Create list of tuples: (Employee Name, Leave Type, Percentage Used)
+    result = [(row['Employee Name'], row['Leave Type'], round(row['Fraction Used'] * 100, 1), row['Department'])
+              for _, row in alert_df.iterrows()]
+
+    return result
+
+
+#get_overall_leave_trends(save_path="leave_data/leave_trends.png")
+for i in employees_near_entitlement():
+    print(i)
