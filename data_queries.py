@@ -7,12 +7,18 @@ import io
 df = pd.read_csv('leave_data\employee leave tracking data.csv')
 
 def findlowestleave():
-    #trying to answer: Who has the lowest remaining leave balance (at risk of running out)?
+    #trying to answer: #trying to answer: Who has the lowest remaining leave balance (at risk of running out)?
     min_leave = df["Remaining Leaves"].min()
     names = df.loc[df['Remaining Leaves'] == min_leave, "Employee Name"]
     result = names.tolist()
     #still need to figure out the thought process being displayed
-    return("Employee(s) with lowest remaining leave:", result)
+    output = (
+        "--- Employee(s) with lowest Remaining Leave ---<br>"
+        f"Remaining leave days: {min_leave}<br>"
+        f"Employees: {', '.join(result)}"
+    )
+    output = output.replace('\n', '<br>')
+    return output
 
 def findhighestleave():
     #trying to answer: Who has unusually high unused leave (might need reminders before carryover/expiry)?
@@ -20,7 +26,13 @@ def findhighestleave():
     names = df.loc[df["Remaining Leaves"] == max_leave, "Employee Name"]
     result = names.tolist()
     #still need to figure out the thought process being displayed
-    return("Employee(s) with highest remaining leave:", result)
+    output = (
+        "--- Employee(s) with Highest Remaining Leave ---<br>"
+        f"Remaining leave days: {max_leave}<br>"
+        f"Employees: {', '.join(result)}"
+    )
+    output = output.replace('\n', '<br>')
+    return output
 
 def leave_trends_by_department_role():
     #trying to answer: Leave Trends by Department & Role
@@ -36,7 +48,7 @@ def leave_trends_by_department_role():
         "--- Leave by Department & Role ---\n"
         f"{dept_role_trend.to_string(index=False)}"
     )
-
+    output = output.replace('\n', '<br>')
     return output
 
 
@@ -52,7 +64,7 @@ def month_highest_leave():
         "--- Month(s) with Highest Leave Days ---\n"
         f"{highest_months.to_string(index=False)}"
     )
-
+    output = output.replace('\n', '<br>')
     return output
 
 
@@ -71,6 +83,7 @@ def most_common_leave_type():
         f"{leave_days.to_string(index=False)}"
     )
 
+    output = output.replace('\n', '<br>')
     return output
 
 
@@ -134,18 +147,38 @@ def employees_near_entitlement(threshold=0.9):
 
     # Filter employees who are above the threshold
     alert_df = df[df['Fraction Used'] >= threshold].copy()
-    result = [(row['Employee Name'], row['Leave Type'], round(row['Fraction Used'] * 100, 1), row['Department'])
-              for _, row in alert_df.iterrows()]
 
-    return result
+    if alert_df.empty:
+        return "--- Employees Near Entitlement ---<br>No employees are close to exhausting their leave."
+
+    # Format output as a table-like string
+    output = "--- Employees Near Entitlement ---<br>"
+    output += "Employee Name | Leave Type | % Used | Department<br>"
+    output += "--- | --- | --- | ---<br>"
+
+    for _, row in alert_df.iterrows():
+        output += f"{row['Employee Name']} | {row['Leave Type']} | {round(row['Fraction Used']*100, 1)}% | {row['Department']}<br>"
+
+    output = output.replace('\n', '<br>')
+    return output
 
 def employees_not_taking_leave(threshold=0.1):
     df['Fraction Used'] = df['Leave Taken So Far'] / df['Total Leave Entitlement']
     low_leave_df = df[df['Fraction Used'] <= threshold].copy()
-    result = [(row['Employee Name'], row['Leave Type'], round(row['Fraction Used'] * 100, 1))
-              for _, row in low_leave_df.iterrows()]
 
-    return result
+    if low_leave_df.empty:
+        return "--- Employees Not Taking Leave ---<br>No employees found below the threshold."
+
+    # Format output as a table-like string
+    output = "--- Employees Not Taking Leave ---<br>"
+    output += "Employee Name | Leave Type | % Used<br>"
+    output += "--- | --- | ---<br>"
+
+    for _, row in low_leave_df.iterrows():
+        output += f"{row['Employee Name']} | {row['Leave Type']} | {round(row['Fraction Used']*100, 1)}%<br>"
+
+    output = output.replace('\n', '<br>')
+    return output
 
 
 def department_sick_leave():
@@ -158,4 +191,5 @@ def department_sick_leave():
     # Sort descending to see departments with most sick leave
     dept_sick = dept_sick.sort_values(by="Days Taken", ascending=False).reset_index(drop=True)
     output = "--- Departments with Sick Leave Totals ---\n" + dept_sick.to_string(index=False)
+    output = output.replace('\n', '<br>')
     return output
