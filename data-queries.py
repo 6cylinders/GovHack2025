@@ -1,5 +1,9 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import io
+import base64
+import os
 
 df = pd.read_csv('leave_data\employee leave tracking data.csv')
 
@@ -87,11 +91,44 @@ def sick_leave_trends():
     )
 
     return output
-    
 
+def get_overall_leave_trends(save_path=None):
+    df['Start Date'] = pd.to_datetime(df['Start Date'])
+    df['End Date'] = pd.to_datetime(df['End Date'])
 
+    month_order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
+    df['month'] = pd.Categorical(df['month'], categories=month_order, ordered=True)
 
+    monthly_trends = df.groupby(['Leave Type', 'month'])['Days Taken'].sum().reset_index()
 
-test = sick_leave_trends()
-print(test)
+    # pivot for plotting
+    pivot_trends = monthly_trends.pivot(index='month', columns='Leave Type', values='Days Taken').fillna(0)
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    pivot_trends.plot(kind='bar', ax=ax)
+    ax.set_title('Monthly Leave Trends by Leave Type')
+    ax.set_xlabel('Month')
+    ax.set_ylabel('Total Days Taken')
+    ax.tick_params(axis='x', rotation=45)
+    ax.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    plt.close(fig)
+    buf.seek(0)
+
+    if save_path:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        with open(save_path, "wb") as f:
+            f.write(buf.getvalue())
+
+    # Encode to base64
+    img_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    html_img = f'<img src="data:image/png;base64,{img_base64}" />'
+
+    return html_img
+
+get_overall_leave_trends(save_path="leave_data/leave_trends.png")
