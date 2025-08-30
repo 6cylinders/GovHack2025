@@ -20,13 +20,44 @@
         
         {% if response %}
         <div class="response-box">
-            <p><strong>Response:</strong> {{ response }}</p>
+            <p><strong>Response:</strong> {% autoescape false %} {{ response }} {% endautoescape %}</p>
             
             {% if table_img %}
             <img src="data:image/png;base64,{{ table_img }}" alt="Generated Table" />
             {% endif %}
         </div>
         {% endif %}
+<<<<<<< Updated upstream
+=======
+        {% if table_data %}
+            <table border="1" cellpadding="5" cellspacing="0">
+                <thead>
+                    <tr>
+                        {% for key in table_data[0].keys() %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in table_data %}
+                        <tr>
+                            {% for value in row.values() %}
+                                <td> {% autoescape false %} {{ value }}  {% endautoescape %}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    {% endif %}
+
+{% if table_img %}
+  <img src="{{ table_img }}" alt="Generated chart">
+{% endif %}
+        
+
+
+
+>>>>>>> Stashed changes
     </div>
 </body>
 </html>
