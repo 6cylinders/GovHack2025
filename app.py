@@ -1,7 +1,4 @@
 from flask import Flask, render_template, request
-import io
-import base64
-import matplotlib.pyplot as plt
 
 from govhack_ml import interpret_query  
 import data_queries 
