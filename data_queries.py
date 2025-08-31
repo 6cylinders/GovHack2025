@@ -118,9 +118,10 @@ def get_overall_leave_trends(save_path=None):
 
     # pivot for plotting
     pivot_trends = monthly_trends.pivot(index='month', columns='Leave Type', values='Days Taken').fillna(0)
+    colors = ["#1f3b73", "#2ca6a4", "#f28e2b", "#edc948", "#e15759"]
 
     fig, ax = plt.subplots(figsize=(8, 4))
-    pivot_trends.plot(kind='bar', ax=ax)
+    pivot_trends.plot(kind='bar', ax=ax, color=colors)
     ax.set_title('Monthly Leave Trends by Leave Type')
     ax.set_xlabel('Month')
     ax.set_ylabel('Total Days Taken')

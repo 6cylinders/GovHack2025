@@ -19,6 +19,7 @@ def home():
 
           # Run through ML interpreter
         matched_func, score = interpret_query(user_query)
+        #create a match case for all functions here
 
         if matched_func and score >= 0.500:
             try:
