@@ -106,9 +106,17 @@ def sick_leave_trends():
     return output
     
 def get_overall_leave_trends(save_path=None):
+
+    """
+    Creates a graph of monthly leave usage from the dataset grouped by leave categories
+    :param save_path: String. An optional file save path used for testing
+    :return: Returns an embedded HTML image of the graph
+    """
+
     df['Start Date'] = pd.to_datetime(df['Start Date'])
     df['End Date'] = pd.to_datetime(df['End Date'])
 
+    # stops the graph from displaying months in alphabetical order
     month_order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -129,6 +137,7 @@ def get_overall_leave_trends(save_path=None):
     ax.grid(axis='y', linestyle='--', alpha=0.7)
     plt.tight_layout()
 
+    # converting the graph to bytes in memory
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     plt.close(fig)
@@ -139,13 +148,21 @@ def get_overall_leave_trends(save_path=None):
         with open(save_path, "wb") as f:
             f.write(buf.getvalue())
 
-    # Encode to base64
+    # Encoding the image to base64 for HTML embedding
     img_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
     html_img = f'<img src="data:image/png;base64,{img_base64}" />'
 
     return html_img
 
 def employees_near_entitlement(threshold=0.9):
+
+    """
+    Calculates when employees are getting close to their maximum entitled leave
+    :param threshold: Float. The cutoff for percent of leave used up.
+    :return: String. HTML-ready list output of all employees close to their threshold.
+    """
+
+    # Creating threshold
     df['Fraction Used'] = df['Leave Taken So Far'] / df['Total Leave Entitlement']
 
     # Filter employees who are above the threshold
@@ -166,6 +183,12 @@ def employees_near_entitlement(threshold=0.9):
     return output
 
 def employees_not_taking_leave(threshold=0.1):
+
+    """
+    :param threshold: Float. The maximum percentage for leave used up.
+    :return: String. HTML-ready list output of all employees not using leave.
+    """
+
     df['Fraction Used'] = df['Leave Taken So Far'] / df['Total Leave Entitlement']
     low_leave_df = df[df['Fraction Used'] <= threshold].copy()
 
@@ -185,6 +208,10 @@ def employees_not_taking_leave(threshold=0.1):
 
 
 def department_sick_leave():
+
+    """
+    :return: String. HTML-ready list output of all departments with total sick leave days.
+    """
     sick_df = df[df["Leave Type"].str.lower().str.contains("sick leave", na=False)]
 
     if sick_df.empty:
