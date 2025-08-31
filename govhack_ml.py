@@ -97,9 +97,15 @@ for fname, texts in functions.items():
     func_embeddings[fname] = model.encode(texts, convert_to_tensor=True)
 
 def interpret_query(query):
+    """
+    :param query: String
+    :return: best function candidate as a String, best score as a Float
+    """
     query_emb = model.encode(query, convert_to_tensor=True)
     best_score = -1
     best_func = None
+
+    # Finds maximum score and returns the function with that score.
 
     for fname, embeddings in func_embeddings.items():
         scores = util.cos_sim(query_emb, embeddings)
